@@ -1,16 +1,18 @@
 #-------------------------------------------------------------------------------
 # x86toLLVM
 #
-# This code converts an ELF file to LLVM bitcode.
+# This code converts an ELF/PE file to LLVM bitcode.
 #-------------------------------------------------------------------------------
 
 # For compatibility with Python 3
 from __future__ import print_function
 
-# Imorts
+# Imports
 import sys
 import distorm3
 from elftools.elf.elffile import ELFFile
+
+from emulator import Emulator
 
 
 def process_file(filename):
@@ -24,7 +26,19 @@ def process_file(filename):
 		text_section = elf_file.get_section_by_name(".text")
 		base_address = text_section.header['sh_addr']
 		disassembly = distorm3.Decompose(base_address, text_section.data())
-		
+
+		# Get the symbol table as table of addresses mapped to names
+		symbol_table_section = elf_file.get_section_by_name(".symtab")
+		symbol_table = {} # TODO: Fill in the symbol table...
+
+		# Create an LLVM emulator
+		emulator = Emulator("module", symbol_table)
+		for instruction in disassembly:
+			if hasattr(emulator, instruction.mnemonic):
+				method = getattr(emulator, instruction.mnemonic)
+				method(instruction)
+			else:
+				print(instruction.mnemonic+" not implemented yet. Please implement it!")
 
 	return disassembly
 
