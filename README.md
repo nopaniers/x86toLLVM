@@ -7,7 +7,7 @@ This project will rely on several external libraries for python. These are
 
 - [distorm3](http://code.google.com/p/distorm/) for disassembly of the PE files
 - [llvm-py](http://www.mdevan.org/llvm-py/) for constructing the LLVM code
-- [pyelftools](https://bitbucket.org/eliben/pyelftools/overview)
+- [pyelftools](https://bitbucket.org/eliben/pyelftools/overview) for reading ELF files
 
 Using *pyelftools* (or a PE file eqivalent) the object file will be read, disassembly will proceed using *distorm3*. The disassembled instructions will then be translated from x86 to their LLVM emulation equivalent, instruction by instruction. This part will use the *llvm-py* library which emits the bitcode.
 
